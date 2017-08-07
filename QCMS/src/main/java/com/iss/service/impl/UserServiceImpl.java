@@ -6,7 +6,9 @@
  */
 package com.iss.service.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,7 @@ public class UserServiceImpl implements IUserService{
 	@Override
 	@Transactional
 	public UserEntity add(UserEntity entity){
+		if(entity.getCreateTime()==null)entity.setCreateTime(new Timestamp(System.currentTimeMillis()));
 		UserEntity user = iUserDao.saveAndFlush(entity);
 		return user;
 	}

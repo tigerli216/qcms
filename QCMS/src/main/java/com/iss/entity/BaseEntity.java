@@ -21,7 +21,7 @@ public class BaseEntity extends IdEntity{
 	protected String name;    //名称
 	protected Boolean status=true; //状态
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
-	protected Timestamp createTime;//创建时间
+	protected Timestamp createTime=new Timestamp(System.currentTimeMillis());//创建时间
 	
 	public String getName() {
 		return name;
