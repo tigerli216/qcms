@@ -50,6 +50,11 @@ public class NetBarListController extends BaseController {
 	private IAreasCodeService iAreasCodeService;
 	
 	
+	/**
+	 * 网吧列表
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/list")
 	public String list(Model model){
 		UserEntity user=(UserEntity)session.getAttribute(ConstantValue.SESSION_USER);
@@ -66,6 +71,30 @@ public class NetBarListController extends BaseController {
 		model.addAttribute("statList", statList);
 		return "wh/netbar2_list";
 	}
+	
+	
+	/**
+	 * 网吧施工列表
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/build/list")
+	public String barBuildList(Model model){
+		UserEntity user=(UserEntity)session.getAttribute(ConstantValue.SESSION_USER);
+		String json=null;
+		if(user!=null){
+			if(SystemConstants.ADMINISTRATOR_NAME.equals(user.getLogin())){
+				json = iAreasCodeService.getTreeAreas(null);
+			}else
+				json=this.iAreasCodeService.getUserAreasTree(user.getId());
+		}
+//		String json = iAreasCodeService.getTreeAreas(null);
+		model.addAttribute("areasTree", json);
+//		List<ProvinceCityBarEntity> statList = iNetBarListService.loadProvinceCityBar(user);
+//		model.addAttribute("statList", statList);
+		return "wh/netbar2_build_list";
+	}
+	
 	
 	@ResponseBody
 	@RequestMapping(value="/loadAreaTree", produces="application/json;charset=UTF-8")
