@@ -6,13 +6,13 @@ public class NetBarPrintVo {
 	private String barName;
 	private String approvalNum;
 	private String regAddress;
-	private Long zdzs=0l;
-	private Long onLineCount=0l;
-	private Long offLineCount=0l;
-	private Long installNum=0l;
-	private Long unInstallNum=0l;
-	private String onLineRate="0";
-	private String installRate="0";
+	private Long zdzs=0l;//终端总数
+	private Long onLineCount=0l; //在线数
+	private Long offLineCount=0l;//离线数
+	private Long installNum=0l;//已安装终端树
+	private Long unInstallNum=0l; //未安装终端
+	private String onLineRate="0"; //在线率
+	private String installRate="0"; //安装率
 	private String uploadTime;
 	private String uploadDate;
 	

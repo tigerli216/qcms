@@ -139,13 +139,17 @@
 								</select>
 							</div>
 						</div>
-			            <div class="row m-b">	
-			            	<div class="col-sm-2 text-nowrap l-h"><span class="red">*</span>联系人姓名：</div>
-					    	<div class="col-sm-5"><input type="text" id="contact_name" name="contact_name" value="{{this.contact_name}}" class="form-control" required></div>
+ 						<div class="row m-b">	
+			            	<div class="col-sm-2 text-nowrap l-h"> 详细地址：</div>
+					    	<div class="col-sm-5"><input type="text" id="reg_address_detail" name="reg_address_detail" value="{{this.reg_address_detail}}" class="form-control"  ></div>
 			            </div>
 			            <div class="row m-b">	
-			            	<div class="col-sm-2 text-nowrap l-h"><span class="red">*</span>联系人手机号：</div>
-					    	<div class="col-sm-5"><input type="text" id="contact_tel" name="contact_tel" value="{{this.contact_tel}}" class="form-control" required></div>
+			            	<div class="col-sm-2 text-nowrap l-h"> 联系人姓名：</div>
+					    	<div class="col-sm-5"><input type="text" id="contact_name" name="contact_name" value="{{this.contact_name}}" class="form-control"  ></div>
+			            </div>
+			            <div class="row m-b">	
+			            	<div class="col-sm-2 text-nowrap l-h"> 联系人手机号：</div>
+					    	<div class="col-sm-5"><input type="text" id="contact_tel" name="contact_tel" value="{{this.contact_tel}}" class="form-control"  ></div>
 			            </div>
 						<div class="row m-b">	
 			            	<div class="col-sm-2 text-nowrap l-h"><span class="red">*</span>核定终端台数：</div>
@@ -263,11 +267,11 @@
             			   	},
             			   	rules:{
                             	netbar_name:{ required:true },
-                                approval_num:{ required:true, number:true, maxlength:20 },
+                                approval_num:{ required:true,  maxlength:20 },//number:true,
                                 city_code:{ required:true },
                                 district_code:{ required:true },
-                                contact_name:{ required:true },
-                                contact_tel:{ required:true, number:true, maxlength:11,minlength:11 },
+                                /* contact_name:{ required:true },
+                                contact_tel:{ required:true, number:true, maxlength:11,minlength:11 }, */
                                 computer_num:{ required:true, number:true, min:0 }
                                 /* ,
                                 outside_network:{ required:true },

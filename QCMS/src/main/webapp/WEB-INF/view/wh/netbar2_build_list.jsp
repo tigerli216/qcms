@@ -119,24 +119,13 @@
     		var areaName = "";
     		initDtSearch();
     		var onClick = function(event, treeId, treeNode, clickFlag) {
-				var url = '${basePath}/netbarList/loadProvinceCityBar';
+				var url = '${basePath}/netbarList/build/list/query';
 				id = treeNode.id;
 				parentId = treeNode.pId;
 				areaName = treeNode.name;
-				var columns = [{data:'areaName'},{data:'online'},{data:'offline'},{data:'pcTotal'}];//,{data:'login'}
-				editableNm="editable";
-				if(treeNode.pId == 0){
-					$('#bar_div').css('display','none');
-					$('#stat_div').css('display','block');
-	        	}else if(treeNode.pId == 410000){
-	        		$('#bar_div').css('display','none');
-					$('#stat_div').css('display','block');
-	        	}else{
-	        		//修改表头
-	        		$('#bar_div').css('display','block');
-					$('#stat_div').css('display','none');
-					editableNm="editable_";
-	        	}
+				var columns = [{data:'barId'},{data:'barName'},{data:'approvalNum'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
+				,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'}];//,{data:'login'}
+				
 				//再次查询时先删除editable，如果少了以下语句每次只能查询一次，第二次点击查询就不执行。
 				var table = $('#'+editableNm).dataTable();
 				if(table){
@@ -144,46 +133,17 @@
 				}
     			//获取dataTable的第一行所有单元格
     			var cells = table[0].rows[0].cells;
-    			console.log(cells.length+"---"+treeNode.pId);
+    			console.log(cells.length+"---"+treeNode.pId+" id:"+id+"===parentId:"+parentId+"==areaName:"+areaName);
 
 				if(treeNode.pId == 0){
-					$('#bar_div').css('display','none');
-					$('#stat_div').css('display','block');
-    				//修改表头
-    				cells[0].textContent = '市';
-    				cells[1].textContent = '在线网吧数';
-	        		cells[2].textContent = '离线网吧数';
-	        		cells[3].textContent = '机器总数';
-	        	//	cells[4].textContent = '';//当前用户总数
+					 
 	        		
 	        	}else if(treeNode.pId == 410000){
-	        		$('#bar_div').css('display','none');
-					$('#stat_div').css('display','block');
-	        		//修改表头
-	        		cells[0].textContent = '县';
-	        		cells[1].textContent = '在线网吧数';
-	        		cells[2].textContent = '离线网吧数';
-	        		cells[3].textContent = '机器总数';
-	        	//	cells[4].textContent = '';//当前用户总数
+	        		 
 	        		
 	        	}else{
-	        		//修改表头
-	        		$('#bar_div').css('display','block');
-					$('#stat_div').css('display','none');
-	        		cells[0].textContent = '网吧列表';
-	        		cells[1].textContent = '在线终端数';
-	        		cells[2].textContent = '离线终端数';
-	        		/* cells[3].textContent = '有效终端数';
-	        		cells[4].textContent = '服务端版本'; */
-	        		cells[3].textContent = '今日累计在线';//有效终端数
-	            	cells[4].textContent = '昨天累计在线';//服务端版本
-	        		
-	        		//更换URL，并传递节点ID参数
-	        		url = '${basePath}/netbarList/loadAreasBar';
-	        		columns = [{data:'barName'},{data:'online'},{data:'offline'},
-	        		           /* {data:'valid'},{data:'serverVersion'} */
-	        		           {data:'onlineNumToday'},{data:'onlineNumYsday'}
-	        		           ];
+	        		 
+	        		 
 	        	}
         		
         		//省级表格初始化

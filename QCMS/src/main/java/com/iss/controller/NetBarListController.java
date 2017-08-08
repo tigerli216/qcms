@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
 import com.iss.constants.SystemConstants;
 import com.iss.entity.AreasBarEntity;
 import com.iss.entity.ProvinceCityBarEntity;
@@ -74,7 +75,7 @@ public class NetBarListController extends BaseController {
 	
 	
 	/**
-	 * 网吧施工列表
+	 * 跳转网吧施工列表
 	 * @param model
 	 * @return
 	 */
@@ -93,6 +94,22 @@ public class NetBarListController extends BaseController {
 //		List<ProvinceCityBarEntity> statList = iNetBarListService.loadProvinceCityBar(user);
 //		model.addAttribute("statList", statList);
 		return "wh/netbar2_build_list";
+	}
+	
+	
+	/**
+	 * 统计施工列表网吧信息
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/build/list/query", produces="application/json;charset=UTF-8")
+	public String barBuildListQuery(Model model){
+		UserEntity user=(UserEntity)session.getAttribute(ConstantValue.SESSION_USER);
+		String json=null;
+		List<NetBarPrintVo> list=new ArrayList<NetBarPrintVo>();
+		json=JsonUtil.toJson(list);
+		return json;
 	}
 	
 	
