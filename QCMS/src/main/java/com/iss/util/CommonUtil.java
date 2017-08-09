@@ -41,4 +41,9 @@ public class CommonUtil {
 	public static boolean isNotEmpty(Object obj) {
 		return !isEmpty(obj);
 	}
+	
+	public static String toString(Object obj){
+		if(obj==null)return "";
+		return obj.toString();
+	}
 }

@@ -120,6 +120,84 @@ public class NetBarListServiceImpl implements INetBarListService {
 	
 
 	@Override
+	public List<NetBarPrintVo> queryNetBarDeploys(UserEntity user,
+			DataParam param) {
+		// TODO Auto-generated method stub
+		List<NetBarPrintVo> data = new ArrayList<NetBarPrintVo>();
+		Map<String, Object> parammap=new HashMap<String, Object>();
+		String querytype=param.getSearch().get("querytype");
+		String keyword=param.getSearch().get("keyword");
+		if("keywords".equals(querytype)){
+			parammap.put("keyword", keyword);
+		}
+//		String value = param.getSearch().get("value");
+		String areaCode=param.getSearch().get("areaCode");
+		String districtCode=param.getSearch().get("districtCode");
+		
+		parammap.put("areaCode", areaCode);
+		parammap.put("districtCode", districtCode);
+		if(CommonUtil.isEmpty(areaCode) && CommonUtil.isEmpty(districtCode) && CommonUtil.isEmpty(keyword)){
+			return data;
+		}
+		/*if(CommonUtil.isNotEmpty(querytype)){
+			if(CommonUtil.isEmpty(value))
+				return data;
+		}else querytype="code";*/
+		String url=PropertiesUtil.getPropery("netbar.queryUrl");
+		if(SystemConstants.ADMINISTRATOR_NAME.equals(user.getLogin())){
+			url=url+querytype;
+		}else{
+//			String params=user.getId()+":"+querytype+":"+value;
+			url = url + querytype;
+			parammap.put("userId", user.getId());
+		}
+		String result = HttpClientUtil.netBarListHttpPost(url,parammap);
+		//json结果转换为List集合
+		try {
+			List<AreasBarEntity> list=null;
+			if(StringUtil.isNotEmpty(result)){
+				list = JSON.parseArray(result,AreasBarEntity.class);
+			}
+			for (AreasBarEntity ae : list) {
+				NetBarPrintVo vo = new NetBarPrintVo();
+				vo.setBarId(ae.getBarId());
+				vo.setBarName(ae.getBarName()+"("+CommonUtil.toString(ae.getApprovalNum())+")");
+				vo.setApprovalNum(ae.getApprovalNum());
+				Integer comNum=ae.getComputerNum();
+				vo.setZdzs(Long.valueOf(comNum));
+				// 已安装终端:// OnlineStatistic.onlineNum + OnlineStatistic.offlineNum
+				vo.setInstallNum(ae.getOnline() + ae.getOffline());
+				vo.setUnInstallNum(comNum - vo.getInstallNum());// 未安装终端: 终端总数 -  已安装终端
+				vo.setOnLineCount(ae.getOnlineNumToday());// 在线=OnlineStatistic.onlineNumToday
+				vo.setOffLineCount(vo.getInstallNum() - vo.getOnLineCount()); // 不在线=已安装终端  -  在线
+				// 在线率: 在线 / 终端总数 * 100% (保留到小数点后1位)
+				// vo.setOnLineCount(1l);
+				// vo.setInstallNum(1l);
+				double onlineRage = 0, installRate = 0;
+				if (comNum != null && comNum != 0) {
+					long onLineCount = vo.getOnLineCount();
+					onlineRage = (Double.valueOf(onLineCount) / comNum) * 100;
+					vo.setOnLineRate(NumberUtil.parseDoubleToString(onlineRage,
+							1));
+					// 安装率: 已安装终端 / 终端总数 * 100% (保留到小数点后1位)
+					installRate = (Double.valueOf(vo.getInstallNum()) / comNum) * 100;
+					vo.setInstallRate(NumberUtil.parseDoubleToString(installRate, 1));
+				}
+				vo.setOnLineRate(NumberUtil.parseDoubleToString(onlineRage, 1));
+				vo.setInstallRate(NumberUtil
+						.parseDoubleToString(installRate, 1));
+				//
+				data.add(vo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		return data;
+	}
+
+	@Override
 	public List<AreasBarEntity> loadAreasBar(String areaCode, String barId) {
 		// TODO Auto-generated method stub
 		if(StringUtil.isEmpty(areaCode) || StringUtil.isEmpty(barId))return null;

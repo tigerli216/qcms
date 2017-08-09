@@ -25,6 +25,9 @@ public class AreasBarEntity implements Serializable, IExcelModel{
 	private String barId;
 	@Excel(name = "网吧名称", orderNum = "1")
 	private String barName;
+	
+	private String approvalNum;
+	private Integer computerNum;
 	@Excel(name = "在线终端数", orderNum = "2")
 	private Long online;
 	@Excel(name = "离线终端数", orderNum = "3")
@@ -118,6 +121,22 @@ public class AreasBarEntity implements Serializable, IExcelModel{
 
 	public void setOnlineNumYsday(Long onlineNumYsday) {
 		this.onlineNumYsday = onlineNumYsday;
+	}
+
+	public String getApprovalNum() {
+		return approvalNum;
+	}
+
+	public void setApprovalNum(String approvalNum) {
+		this.approvalNum = approvalNum;
+	}
+
+	public Integer getComputerNum() {
+		return computerNum;
+	}
+
+	public void setComputerNum(Integer computerNum) {
+		this.computerNum = computerNum;
 	}
 	
 

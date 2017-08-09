@@ -31,6 +31,8 @@ public class ConstantValue {
 	//在httpsession中存储当前系统部门集合
 	public final static String SESSION_GROUP_DATA = "groupData";
 	
+	public final static String SESSION_NETBAR_DEPLOY="DEPLOY_NETBARS";
+	
 	//模板下载目录
 	public static String TEMPLATE_DIR = PropertiesUtil.getPropery("template_dir");
 }

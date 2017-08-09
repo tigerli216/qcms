@@ -24,6 +24,13 @@ public interface INetBarListService {
 	
 	List<StatNetBarEntity> getStatNetBars(String area_code);
 	
+	/**
+	 * 网吧施工列表查询
+	 * @param user
+	 * @param param
+	 * @return
+	 */
+	List<NetBarPrintVo> queryNetBarDeploys(UserEntity user,DataParam param);
 
 	NetBarPrintVo queryNetbarPrintInfo(String barId);
 }

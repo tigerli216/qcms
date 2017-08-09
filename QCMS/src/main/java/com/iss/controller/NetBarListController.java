@@ -104,13 +104,23 @@ public class NetBarListController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/build/list/query", produces="application/json;charset=UTF-8")
-	public String barBuildListQuery(Model model){
+	public String barBuildListQuery(DataParam param){
 		UserEntity user=(UserEntity)session.getAttribute(ConstantValue.SESSION_USER);
 		String json=null;
-		List<NetBarPrintVo> list=new ArrayList<NetBarPrintVo>();
-		json=JsonUtil.toJson(list);
-		return json;
+		List<NetBarPrintVo> data=iNetBarListService.queryNetBarDeploys(user, param);
+		session.setAttribute(ConstantValue.SESSION_NETBAR_DEPLOY, data);
+		if(CommonUtil.isNotEmpty(data)){
+			for(NetBarPrintVo b:data){
+//				if(b.get)
+			}
+		}
+		DataTables<NetBarPrintVo> dt = new DataTables<NetBarPrintVo>(param.getDraw(), data.size(), data.size(), data);
+		return JsonUtil.toJson(dt);
+//		json=JsonUtil.toJson(list);
+//		return json;
 	}
+	
+	
 	
 	
 	@ResponseBody

@@ -166,7 +166,7 @@ var initEvent= function(url){
 }
 //扩展DT的搜索文本框回车查询默认配置
 var initDtSearch = function(){
-	console.log("initDtSearch");
+	console.log("initDtSearch from edit...");
 	$.extend($.fn.dataTable.defaults, {
 	    //DT初始化完毕回调函数
 	    initComplete: function(settings) {
@@ -174,6 +174,7 @@ var initDtSearch = function(){
 	        var searchHTML='<div class="dataTables_filter"><label>查找:<input type="search" class="form-control input-sm" aria-controls="editable" placeholder="按回车搜索内容"></label></div>';
 	        //快捷操作的HTML DOM
 	        $(_$this.selector + '_wrapper .dataTables_filter').html(searchHTML);
+	        console.log(_$this.selector + '_wrapper .dataTables_filter');
 	        //重写搜索事件
 	        $(_$this.selector + '_wrapper .dataTables_filter input').bind('keyup',
 	        function(e) {
