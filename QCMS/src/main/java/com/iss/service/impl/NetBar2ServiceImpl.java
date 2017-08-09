@@ -122,6 +122,10 @@ public class NetBar2ServiceImpl implements INetBar2Service {
 			entity.setArea_code(netbar.getArea_code());
 			entity.setServer_version(netbar.getServer_version());
 			entity.setClient_version(netbar.getClient_version());*/
+			
+			netbar.setNetbar_name(entity.getNetbar_name());
+			netbar.setCity_code(entity.getCity_code());
+			netbar.setDistrict_code(entity.getDistrict_code());
 			netbar.setReg_address_detail(entity.getReg_address_detail());
 			netbar.setApproval_num(entity.getApproval_num());
 			netbar.setContact_name(entity.getContact_name());

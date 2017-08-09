@@ -315,9 +315,9 @@
             				$("#city_code").val(dataJson.city_code);//显示文件所在模块下拉框值
             				$("#city_code").trigger("change");//触发一级的change，获取二级的值
             				
-            				$("#approval_num").attr("disabled", "disabled");
+            				/* $("#approval_num").attr("disabled", "disabled");
             				$("#city_code").attr("disabled","disabled");
-            				$("#district_code").attr("disabled","disabled");
+            				$("#district_code").attr("disabled","disabled"); */
             			}
                		}
 	        	});
