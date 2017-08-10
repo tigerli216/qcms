@@ -25,6 +25,7 @@ import com.iss.util.HttpClientUtil;
 import com.iss.util.NumberUtil;
 import com.iss.util.PropertiesUtil;
 import com.iss.util.StringUtil;
+import com.iss.util.ThreadLocalUtil;
 import com.iss.vo.DataParam;
 import com.iss.vo.NetBarPrintVo;
 
@@ -158,8 +159,15 @@ public class NetBarListServiceImpl implements INetBarListService {
 			if(StringUtil.isNotEmpty(result)){
 				list = JSON.parseArray(result,AreasBarEntity.class);
 			}
+			Map<String, Object> statisMap=new HashMap<String, Object>();
+			int total=list.size(),deployNum=0,undeployNum=0;
+			statisMap.put("total", total);
+			
 			for (AreasBarEntity ae : list) {
+				if(ae.getIsdeployed()!=null && ae.getIsdeployed().intValue()==1)deployNum++;
+				else undeployNum++;
 				NetBarPrintVo vo = new NetBarPrintVo();
+				vo.setIsdeployed(ae.getIsdeployed()==null?0:ae.getIsdeployed());
 				vo.setBarId(ae.getBarId());
 				vo.setBarName(ae.getBarName()+"("+CommonUtil.toString(ae.getApprovalNum())+")");
 				vo.setApprovalNum(ae.getApprovalNum());
@@ -189,6 +197,9 @@ public class NetBarListServiceImpl implements INetBarListService {
 				//
 				data.add(vo);
 			}
+			statisMap.put("deployNum", deployNum);
+			statisMap.put("undeployNum", undeployNum);
+			ThreadLocalUtil.setValue(statisMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

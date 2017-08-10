@@ -44,9 +44,9 @@
                     			<ul id="nodeTree" class="ztree" style="padding-left: 20%;"></ul>
                     		</div>
                     		<div id="barlist_div" class="col-sm-9">
-                    			<input type="button" id="allbtn" value="全部">&nbsp;&nbsp;&nbsp;&nbsp;
-                    			<input type="button" id="finishbtn" value="施工完成">&nbsp;&nbsp;&nbsp;&nbsp;
-                    			<input type="button" id="unfinishbtn" value="施工未完成">
+                    			<input type="button" id="allbtn" value="全部" onclick="loadDataFromSession('all')">&nbsp;&nbsp;&nbsp;&nbsp;
+                    			<input type="button" id="finishbtn" value="施工完成" onclick="loadDataFromSession('finish')">&nbsp;&nbsp;&nbsp;&nbsp;
+                    			<input type="button" id="unfinishbtn" value="施工未完成" onclick="loadDataFromSession('unfinish')">
 		                        <table class="table table-striped table-bordered table-hover " id="editable">
 		                        	
 		                            <thead>
@@ -134,8 +134,8 @@
     		var areaCode="";
     		var districtCode="";
     		initDtSearch();
+    		console.log("--session---${DEPLOY_NETBARS_STATISTICS.total}===${DEPLOY_NETBARS_STATISTICS.deployNum}");
     		var onClick = function(event, treeId, treeNode, clickFlag) {
-				
 				id = treeNode.id;
 				parentId = treeNode.pId;
 				areaName = treeNode.name;
@@ -146,6 +146,7 @@
 				//再次查询时先删除editable，如果少了以下语句每次只能查询一次，第二次点击查询就不执行。
 				var table = $('#'+editableNm).dataTable();
 				if(table){
+					table.fnClearTable();
 					table.fnDestroy();
 				}
     			//获取dataTable的第一行所有单元格
@@ -185,7 +186,7 @@
     			    			 
     			    			
     			    		}); */
-    			    		 
+    			    		setButtonValue('all');
     			    		return drawData(result);
    			    		}
    			    	},//dataSrc表格数据渲染数据加工的方法
@@ -231,6 +232,7 @@
         	console.log("searchByKey==>"+val);
         	var table = $('#'+editableNm).dataTable();
     		if(table){
+    			table.fnClearTable();
     			table.fnDestroy();
     		} 
     		var columns = [/* {data:'barId'}, */{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
@@ -245,9 +247,11 @@
     		    		console.log("++"+JSON.stringify(str));
     		       		$('#'+editableNm).dataTable({
         					paging:false,
+        					 "bSort": false,
     						"data": str ,
     				        "columns":columns
     		   			});
+    		       		setButtonValue('all');
     	       		},
                   	error:function(){
                   		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试！'});
@@ -256,6 +260,52 @@
 			 
 			
     	}
+    	
+    	function setButtonValue(querytype){  
+    		$.com.ajax({
+        		url: "${basePath}/netbarList/build/statistics",
+		       	data: {"search":{"querytype":querytype}},
+		       	success: function(result){
+		       		$("#allbtn").val("全部("+result.total+")");
+		    		$("#finishbtn").val("施工完成("+result.deployNum+")");
+		    		$("#unfinishbtn").val("施工未完成("+result.undeployNum+")");
+		    		var str= drawData(result);
+	       		},
+              	error:function(){
+              		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试！'});
+                }
+			});
+    		
+    	}
+    	
+    	function loadDataFromSession(querytype){
+    		var table = $('#'+editableNm).dataTable();
+    		if(table){
+    			table.fnClearTable();
+    			table.fnDestroy();
+    		} 
+    		var columns = [/* {data:'barId'}, */{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
+			,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'}];//,{data:'login'}
+        	$.com.ajax({
+            		url: "${basePath}/netbarList/build/session/query",
+    		       	data: {"search":{"querytype":querytype}},
+    		       	success: function(result){
+    		    		var str= drawData(result);
+    		    		console.log(str.length+"++"+JSON.stringify(str));
+    		       		$('#'+editableNm).dataTable({
+        					paging:false,
+        					 "bSort": false,
+    						"data": str ,
+    				        "columns":columns
+    		   			});
+    		       		setButtonValue('all');
+    	       		},
+                  	error:function(){
+                  		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试！'});
+                    }
+    			});
+    	}
+    	
     	
     	var hideColumn=function(val){
 			$("#t_head").css("display",val); 

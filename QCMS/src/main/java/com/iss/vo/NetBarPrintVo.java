@@ -1,6 +1,6 @@
 package com.iss.vo;
 
-public class NetBarPrintVo {
+public class NetBarPrintVo implements Comparable<NetBarPrintVo>{
 	
 	private String barId;
 	private String barName;
@@ -15,7 +15,8 @@ public class NetBarPrintVo {
 	private String installRate="0"; //安装率
 	private String uploadTime;
 	private String uploadDate;
-	
+	private Integer isdeployed;
+
 	
 	public String getBarId() {
 		return barId;
@@ -94,6 +95,18 @@ public class NetBarPrintVo {
 	}
 	public void setUploadDate(String uploadDate) {
 		this.uploadDate = uploadDate;
+	}
+	public Integer getIsdeployed() {
+		return isdeployed;
+	}
+	public void setIsdeployed(Integer isdeployed) {
+		this.isdeployed = isdeployed;
+	}
+	@Override
+	public int compareTo(NetBarPrintVo o) {
+		// TODO Auto-generated method stub
+		
+		return Integer.valueOf(String.valueOf(o.getZdzs()-this.zdzs));
 	}
 	
 	

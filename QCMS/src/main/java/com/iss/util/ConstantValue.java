@@ -32,6 +32,8 @@ public class ConstantValue {
 	public final static String SESSION_GROUP_DATA = "groupData";
 	
 	public final static String SESSION_NETBAR_DEPLOY="DEPLOY_NETBARS";
+	public final static String SESSION_NETBAR_DEPLOY_STATISTICS="DEPLOY_NETBARS_STATISTICS";
+
 	
 	//模板下载目录
 	public static String TEMPLATE_DIR = PropertiesUtil.getPropery("template_dir");

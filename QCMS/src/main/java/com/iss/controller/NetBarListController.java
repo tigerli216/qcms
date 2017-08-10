@@ -8,9 +8,13 @@ package com.iss.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
@@ -36,8 +40,10 @@ import com.iss.util.CommonUtil;
 import com.iss.util.ConstantValue;
 import com.iss.util.JsonUtil;
 import com.iss.util.StringUtil;
+import com.iss.util.ThreadLocalUtil;
 import com.iss.vo.AjaxJson;
 import com.iss.vo.DataParam;
+import com.iss.vo.DataTable;
 import com.iss.vo.DataTables;
 import com.iss.vo.NetBarPrintVo;
 
@@ -106,22 +112,60 @@ public class NetBarListController extends BaseController {
 	@RequestMapping(value="/build/list/query", produces="application/json;charset=UTF-8")
 	public String barBuildListQuery(DataParam param){
 		UserEntity user=(UserEntity)session.getAttribute(ConstantValue.SESSION_USER);
+		session.removeAttribute(ConstantValue.SESSION_NETBAR_DEPLOY);
+		session.removeAttribute(ConstantValue.SESSION_NETBAR_DEPLOY_STATISTICS);
+		
 		String json=null;
 		List<NetBarPrintVo> data=iNetBarListService.queryNetBarDeploys(user, param);
+		Map<String, Object> statMap=(Map<String, Object>)ThreadLocalUtil.getValue(true);
+		log.info("====data from thread=====>"+JsonUtil.toJson(statMap));
+		Collections.sort(data);
+		DataTables<NetBarPrintVo> dt = new DataTables<NetBarPrintVo>(param.getDraw(), data.size(), data.size(), data);
+//		DataTable<Set<NetBarPrintVo>> dt = new DataTable<>(param.getDraw(), data.size(), data.size(), dataset);
 		session.setAttribute(ConstantValue.SESSION_NETBAR_DEPLOY, data);
-		if(CommonUtil.isNotEmpty(data)){
-			for(NetBarPrintVo b:data){
-//				if(b.get)
+		session.setAttribute(ConstantValue.SESSION_NETBAR_DEPLOY_STATISTICS, statMap);
+		return JsonUtil.toJson(dt);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/build/statistics", produces="application/json;charset=UTF-8")
+	public String getStatisticsFromSession(DataParam param){
+		UserEntity user=(UserEntity)session.getAttribute(ConstantValue.SESSION_USER);
+		 
+		Map<String, Object> statMap=(Map<String, Object>)session.getAttribute(ConstantValue.SESSION_NETBAR_DEPLOY_STATISTICS);
+		
+		return JsonUtil.toJson(statMap);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/build/session/query", produces="application/json;charset=UTF-8")
+	public String getBarBuildsFromSession(DataParam param){
+		UserEntity user=(UserEntity)session.getAttribute(ConstantValue.SESSION_USER);
+		String querytype=param.getSearch().get("querytype");
+		List<NetBarPrintVo> datalist=(List<NetBarPrintVo>)session.getAttribute(ConstantValue.SESSION_NETBAR_DEPLOY);
+		List<NetBarPrintVo> data=new ArrayList<NetBarPrintVo>();
+//		Set<NetBarPrintVo> datalist=(Set<NetBarPrintVo>)session.getAttribute(ConstantValue.SESSION_NETBAR_DEPLOY);
+//		Set<NetBarPrintVo> data=new TreeSet<NetBarPrintVo>();
+		if("all".equals(querytype)){
+			data.addAll(datalist);
+		}else{
+			int isdeployed=0;
+			if("finish".equals(querytype)){
+				isdeployed=1;
+			}
+			if(CommonUtil.isNotEmpty(datalist)){
+				for(NetBarPrintVo vo:datalist){
+					if(vo.getIsdeployed().intValue()==isdeployed){
+						data.add(vo);
+					}
+				}
 			}
 		}
 		DataTables<NetBarPrintVo> dt = new DataTables<NetBarPrintVo>(param.getDraw(), data.size(), data.size(), data);
+//		DataTable<Set<NetBarPrintVo>> dt = new DataTable<>(param.getDraw(), data.size(), data.size(), data);
+
 		return JsonUtil.toJson(dt);
-//		json=JsonUtil.toJson(list);
-//		return json;
 	}
-	
-	
-	
 	
 	@ResponseBody
 	@RequestMapping(value="/loadAreaTree", produces="application/json;charset=UTF-8")

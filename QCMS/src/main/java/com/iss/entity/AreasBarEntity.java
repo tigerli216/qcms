@@ -28,6 +28,8 @@ public class AreasBarEntity implements Serializable, IExcelModel{
 	
 	private String approvalNum;
 	private Integer computerNum;
+	private Integer isdeployed;
+
 	@Excel(name = "在线终端数", orderNum = "2")
 	private Long online;
 	@Excel(name = "离线终端数", orderNum = "3")
@@ -137,6 +139,14 @@ public class AreasBarEntity implements Serializable, IExcelModel{
 
 	public void setComputerNum(Integer computerNum) {
 		this.computerNum = computerNum;
+	}
+
+	public Integer getIsdeployed() {
+		return isdeployed;
+	}
+
+	public void setIsdeployed(Integer isdeployed) {
+		this.isdeployed = isdeployed;
 	}
 	
 
