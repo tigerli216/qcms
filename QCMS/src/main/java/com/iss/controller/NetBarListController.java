@@ -118,7 +118,7 @@ public class NetBarListController extends BaseController {
 		String json=null;
 		List<NetBarPrintVo> data=iNetBarListService.queryNetBarDeploys(user, param);
 		Map<String, Object> statMap=(Map<String, Object>)ThreadLocalUtil.getValue(true);
-		log.info("====data from thread=====>"+JsonUtil.toJson(statMap));
+//		log.info("====data from thread=====>"+JsonUtil.toJson(statMap));
 		Collections.sort(data);
 		DataTables<NetBarPrintVo> dt = new DataTables<NetBarPrintVo>(param.getDraw(), data.size(), data.size(), data);
 //		DataTable<Set<NetBarPrintVo>> dt = new DataTable<>(param.getDraw(), data.size(), data.size(), dataset);

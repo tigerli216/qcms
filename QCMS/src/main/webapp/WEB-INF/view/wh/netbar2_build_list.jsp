@@ -134,7 +134,6 @@
     		var areaCode="";
     		var districtCode="";
     		initDtSearch();
-    		console.log("--session---${DEPLOY_NETBARS_STATISTICS.total}===${DEPLOY_NETBARS_STATISTICS.deployNum}");
     		var onClick = function(event, treeId, treeNode, clickFlag) {
 				id = treeNode.id;
 				parentId = treeNode.pId;
@@ -146,11 +145,9 @@
 				//再次查询时先删除editable，如果少了以下语句每次只能查询一次，第二次点击查询就不执行。
 				var table = $('#'+editableNm).dataTable();
 				if(table){
-					table.fnClearTable();
+					// table.fnClearTable();
 					table.fnDestroy();
 				}
-    			//获取dataTable的第一行所有单元格
-    			var cells = table[0].rows[0].cells;
     			console.log("---"+treeNode.pId+" id:"+id+"===parentId:"+parentId+"==areaName:"+areaName);
 				if(treeNode.pId == 0){
 					areaCode="";
@@ -163,10 +160,9 @@
 	        		areaCode=treeNode.pId;
 	        		districtCode=treeNode.id;
 	        	}
-        		console.log(editableNm);
         		//省级表格初始化
         		$('#editable').dataTable({
-        			 "bSort": false,
+        			"bSort": false,
         			columns: columns,
         			/* columnDefs:[{
         				targets:0, 
@@ -178,19 +174,14 @@
     				serverSide: true,//pipeline pages 管道式分页加载数据，减少ajax请求
    				 	ajax: {
     			    	url: url, 
-    			    	data: {"search":{"value":id,"areaCode":areaCode,"districtCode":districtCode,"querytype":"code"}},
+    			    	data: {"search":{"value":id,"areaCode":areaCode,"districtCode":districtCode,"querytype":"code1"}},
     			    	type: 'POST', 
     			    	dataSrc: function(result){
-    			    		 
-    			    		/* $.each(result.data,function(index,value){
-    			    			 
-    			    			
-    			    		}); */
     			    		setButtonValue('all');
     			    		return drawData(result);
    			    		}
    			    	},//dataSrc表格数据渲染数据加工的方法
-    			    searchDelay: 300,
+    			    searchDelay: 500,
     			    deferRender: true,//当处理大数据时，延迟渲染数据，有效提高Datatables处理能力
     	           	drawCallback: function(settings){//Datatables每次重绘后执行
     	           		var tr = $('tbody tr.newRow');//初始化新增行的编辑插件
@@ -232,7 +223,7 @@
         	console.log("searchByKey==>"+val);
         	var table = $('#'+editableNm).dataTable();
     		if(table){
-    			table.fnClearTable();
+    			// table.fnClearTable();
     			table.fnDestroy();
     		} 
     		var columns = [/* {data:'barId'}, */{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
@@ -242,12 +233,12 @@
             		url: url,
     		       	data: {"search":{"keyword":val,"querytype":"keywords"}},
     		       	success: function(result){
-    		       		 
     		    		var str= drawData(result);
     		    		console.log("++"+JSON.stringify(str));
     		       		$('#'+editableNm).dataTable({
         					paging:false,
         					 "bSort": false,
+        					 processing: true,
     						"data": str ,
     				        "columns":columns
     		   			});
@@ -262,17 +253,16 @@
     	}
     	
     	function setButtonValue(querytype){  
-    		$.com.ajax({
+   		  $.com.ajax({
         		url: "${basePath}/netbarList/build/statistics",
 		       	data: {"search":{"querytype":querytype}},
 		       	success: function(result){
 		       		$("#allbtn").val("全部("+result.total+")");
 		    		$("#finishbtn").val("施工完成("+result.deployNum+")");
 		    		$("#unfinishbtn").val("施工未完成("+result.undeployNum+")");
-		    		var str= drawData(result);
 	       		},
               	error:function(){
-              		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试！'});
+              		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试。'});
                 }
 			});
     		
@@ -281,7 +271,7 @@
     	function loadDataFromSession(querytype){
     		var table = $('#'+editableNm).dataTable();
     		if(table){
-    			table.fnClearTable();
+    		//	table.fnClearTable();
     			table.fnDestroy();
     		} 
     		var columns = [/* {data:'barId'}, */{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
@@ -301,19 +291,13 @@
     		       		setButtonValue('all');
     	       		},
                   	error:function(){
-                  		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试！'});
+                  		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试！！'});
                     }
     			});
     	}
     	
     	
-    	var hideColumn=function(val){
-			$("#t_head").css("display",val); 
-		//	$("#t_body").attr("display",val); 
-			$("td.t_body_").css("display",val); 
-			
-			$("#t_foot").css("display",val); 
-		}
+    	 
 	</script>
 </body>
 </html>
