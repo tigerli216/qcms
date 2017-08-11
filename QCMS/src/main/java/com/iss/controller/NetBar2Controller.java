@@ -16,6 +16,7 @@ import com.iss.entity.AreasEntity;
 import com.iss.entity.NetBar2Entity;
 import com.iss.service.IAreasCodeService;
 import com.iss.service.INetBar2Service;
+import com.iss.util.CommonUtil;
 import com.iss.util.DateUtil;
 import com.iss.util.HttpClientUtil;
 import com.iss.util.JsonUtil;
@@ -54,6 +55,22 @@ public class NetBar2Controller extends BaseController {
 	public String load(DataParam param){
 		DataTables<NetBar2Entity> dt = iNetBarService.load(param);
 		return JsonUtil.toJson(dt);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/info/show", produces="application/json;charset=UTF-8")
+	public String getBarInfo(DataParam param){
+		String idStr=param.getSearch().get("id");
+		if(CommonUtil.isEmpty(idStr)){
+			return "";
+		}
+		NetBar2Entity bar= this.iNetBarService.getById(idStr);
+		AreasEntity city= this.iAreasCodeService.getById(bar.getCity_code());
+		if(city!=null)bar.setCity_code(city.getAreasname());
+		
+		AreasEntity district= this.iAreasCodeService.getById(bar.getDistrict_code());
+		if(district!=null)bar.setDistrict_code(district.getAreasname());
+		return JsonUtil.toJson(bar);
 	}
 	
 	/**

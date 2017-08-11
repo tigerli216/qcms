@@ -51,7 +51,7 @@
 		                        	
 		                            <thead>
 		                                <tr>
-		                                	<!-- <th style="width:0px;"></th> -->
+		                                	<th>操作</th>
 		                                    <th>网吧名称</th>
 											<th>终端总数/(个)</th>
 											<th>在线/(个)</th>
@@ -60,13 +60,14 @@
 											<th>未安装终端/(个)</th>
 											<th>在线率</th>
 											<th>安装率</th>
+											<th style="display:none;"></th>
 		                                </tr>
 		                            </thead>
 		                            <tbody id="tbody_stat">
 		                            	<c:forEach var="stat" items="${statList}">
 		                            		<tr>
-		                            			<%-- <td style="width:0px;">${stat.barId}</td> --%>
-												<td>${stat.barName}</td>
+		                            			<td>${stat.barId}</td>
+												<td>${stat.barName}</a></td>
 												<td>${stat.online}</td>
 												<td>${stat.offline}</td>
 												<td>${stat.pcTotal}</td>
@@ -74,6 +75,7 @@
 												<td>${stat.online}</td>
 												<td>${stat.offline}</td>
 												<td>${stat.pcTotal}</td>
+												<td style="display:none;">${stat.barId}</td>
 											</tr>
 		                            	</c:forEach>
 		                            </tbody>
@@ -124,6 +126,55 @@
     		<canvas id="myChart" width="800" height="300"></canvas>
     	</div>
     </script>
+     <!--定义HTML模板-->
+	<script id="info_temp" type="text/x-handlebars-template">
+		<div class="tabs-container">
+             <ul class="nav nav-tabs">
+                 <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">详细信息</a></li>
+             </ul>
+             <div class="tab-content">
+                 <div id="tab-1" class="tab-pane active">
+                     <div class="panel-body">
+						<form class="form-horizontal" id="dataForm">
+                        <input type="hidden" id="id" name="id" value="{{this.id}}">
+		    			<div class="row m-b">
+			    	    	<div class="col-sm-2 text-nowrap l-h"><span class="red">*</span>网吧名称：</div>
+					    	<div class="col-sm-5"><input type="text" id="netbar_name" name="netbar_name" value="{{this.netbar_name}}" class="form-control" readonly="readonly"></div>
+					    </div>
+						<div class="row m-b">
+			    	    	<div class="col-sm-2 text-nowrap l-h"><span class="red">*</span>许可证号：</div>
+					    	<div class="col-sm-5"><input type="text" id="approval_num" name="approval_num" value="{{this.approval_num}}" class="form-control" readonly="readonly"></div>
+					    </div>
+					    <div class="row m-b">	
+			            	<div class="col-sm-2 text-nowrap l-h"><span class="red">*</span>区划地址：</div>
+					    	<div class="col-sm-5">
+								<input type="hidden" id="reg_address" name="reg_address" value="{{this.reg_address}}">
+								<input type="text" id="city_code" name="city_code" value="{{this.city_code}}" class="form-control" readonly="readonly" >
+								<input type="text" id="district_code" name="district_code" value="{{this.district_code}}" class="form-control" readonly="readonly" >						
+							</div>
+						</div>
+ 						<div class="row m-b">	
+			            	<div class="col-sm-2 text-nowrap l-h"> 详细地址：</div>
+					    	<div class="col-sm-5"><input type="text" id="reg_address_detail" name="reg_address_detail" value="{{this.reg_address_detail}}" class="form-control" readonly="readonly" ></div>
+			            </div>
+			            <div class="row m-b">	
+			            	<div class="col-sm-2 text-nowrap l-h"> 联系人姓名：</div>
+					    	<div class="col-sm-5"><input type="text" id="contact_name" name="contact_name" value="{{this.contact_name}}" class="form-control" readonly="readonly" ></div>
+			            </div>
+			            <div class="row m-b">	
+			            	<div class="col-sm-2 text-nowrap l-h"> 联系人手机号：</div>
+					    	<div class="col-sm-5"><input type="text" id="contact_tel" name="contact_tel" value="{{this.contact_tel}}" class="form-control" readonly="readonly" ></div>
+			            </div>
+						<div class="row m-b">	
+			            	<div class="col-sm-2 text-nowrap l-h"><span class="red">*</span>核定终端台数：</div>
+					    	<div class="col-sm-5"><input type="text" id="computer_num" name="computer_num" value="{{this.computer_num}}" class="form-control" readonly="readonly"></div>
+			            </div>
+						
+                     </div>
+                 </div>
+             </div>
+        </div>
+	</script>
     <script>
     var editableNm="editable";
     var url = '${basePath}/netbarList/build/list/query';
@@ -134,13 +185,22 @@
     		var areaCode="";
     		var districtCode="";
     		initDtSearch();
+    		var columns = [{data:'isdeployed'},{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
+			,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'},{data:'barId'}];//,{data:'login'}
+    		var columnDefs = new Array();
+			columnDefs.push({targets:0, className:'text-center', orderable:false, render:function(value,type,row,meta){
+				if(value==1)return "已施工";
+				else if(value==0)return "<a onclick='goDeploy("+row.barId+")' style='color: blue;''>确认</a>";
+			}});//操作列
+			// columnDefs.push({targets:1, className:'text-center', orderable:false, render:optRenderAuth, visible:isVisible});//操作列
+			columnDefs.push({targets:1, className:'text-center', orderable:false, render:function(value, type, row, meta){
+    			// console.log(value+"=="+row.netbar_name+"=="+row+"=="+meta);
+    			return "<a onclick='showBarInfo("+row.barId+")' style='color: blue;''>"+value+"</a>";
+    		}});//操作列
     		var onClick = function(event, treeId, treeNode, clickFlag) {
 				id = treeNode.id;
 				parentId = treeNode.pId;
 				areaName = treeNode.name;
-				 
-				var columns = [/* {data:'barId'}, */{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
-				,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'}];//,{data:'login'}
 				
 				//再次查询时先删除editable，如果少了以下语句每次只能查询一次，第二次点击查询就不执行。
 				var table = $('#'+editableNm).dataTable();
@@ -164,6 +224,7 @@
         		$('#editable').dataTable({
         			"bSort": false,
         			columns: columns,
+        			columnDefs: columnDefs,
         			/* columnDefs:[{
         				targets:0, 
         				orderable:true
@@ -193,6 +254,9 @@
         		/* $('.dataTables_filter').css('display','none'); */
         		
     		}
+    		
+    		
+    		
     		var setting = {
    				view:{selectedMulti: false},
    				data:{simpleData:{enable:true, idKey:'id', pidKey:'pId', rootPId:0}},
@@ -257,16 +321,45 @@
         		url: "${basePath}/netbarList/build/statistics",
 		       	data: {"search":{"querytype":querytype}},
 		       	success: function(result){
-		       		$("#allbtn").val("全部("+result.total+")");
-		    		$("#finishbtn").val("施工完成("+result.deployNum+")");
-		    		$("#unfinishbtn").val("施工未完成("+result.undeployNum+")");
+		       		console.log("result===>"+result);
+		       		 
+		       			$("#allbtn").val("全部("+result.total+")");
+			    		$("#finishbtn").val("施工完成("+result.deployNum+")");
+			    		$("#unfinishbtn").val("施工未完成("+result.undeployNum+")");
+		       		 
+		       		
 	       		},
               	error:function(){
-              		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试。'});
+              		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试。。'});
                 }
 			});
     		
     	}
+    	
+    	 //预编译模板
+        var template = Handlebars.compile($('#info_temp').html());
+        var dataDialog = function(dataJson){
+        	var $this = $(this);
+        	var title = ''; //, dataJson = {}
+        	/* if($this.is('i.fa-edit')){
+        		title = '注册信息';
+				var tr = $this.parents('tr');
+				dataJson = dbTable.row(tr).data();
+        	} */
+        	var $div = $(template(dataJson));
+        	BootstrapDialog.show({type:'type-default', size:'size-wide', message:$div, title:title, closable:true,
+	       		 buttons: [ {
+	            	 icon:'fa fa-close', label: '取消',
+	                 action: function(dialog){
+	                	 dialog.close();
+	                 }
+             	}],
+        		onshown: function(dialog){
+        			 
+        			
+           		}
+        	});
+        }
     	
     	function loadDataFromSession(querytype){
     		var table = $('#'+editableNm).dataTable();
@@ -295,8 +388,24 @@
                     }
     			});
     	}
-    	
-    	
+    	var showBarInfo=function(barId){
+    		console.log("show info ===>"+barId);
+    		$.com.ajax({
+        		url: "${basePath}/netbar2/info/show",
+		       	data: {"search":{"id":barId}},
+		       	success: function(result){
+		       		dataDialog(result);
+	       		},
+              	error:function(){
+              		BootstrapDialog.alert({type:'type-danger', message:'加载数据失败，请刷新重试！！'});
+                }
+			});
+    		
+    	}
+    	 var goDeploy=function(barId){
+    	     	console.log("start deploy ===>"+barId);
+    	     	window.open("${basePath}/netbarList/goDeployPrint?barId="+barId,"打印", "height=600, width=1000,top=30,left=50, toolbar =no, menubar=no,scrollbars=no, resizable=no, location=no, status=no");
+    	     };
     	 
 	</script>
 </body>

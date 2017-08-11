@@ -182,6 +182,15 @@ public class NetBar2ServiceImpl implements INetBar2Service {
 		// TODO Auto-generated method stub
 		return this.iNetBarJPADao.queryMaxUpdateTime();
 	}
+	
+	
+
+	@Override
+	public NetBar2Entity getById(String id) {
+		// TODO Auto-generated method stub
+		NetBar2Entity netbar = iNetBarJPADao.findOne(id);
+		return netbar;
+	}
 
 	@Override
 	public String syncNetBarData(String code)throws Exception {

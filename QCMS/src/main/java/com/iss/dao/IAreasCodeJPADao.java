@@ -14,4 +14,6 @@ public interface IAreasCodeJPADao {
 	List<AreasEntity> findByAreasId(String areasid, String rankno);
 	
 	List<AreasEntity> findAll();
+	
+	AreasEntity findOne(String id);
 }

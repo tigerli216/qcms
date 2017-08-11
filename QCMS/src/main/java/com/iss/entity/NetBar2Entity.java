@@ -61,7 +61,7 @@ public class NetBar2Entity implements Serializable, IExcelModel {
 	private String server_version;
 	
 //	private String isDeployedDesc;
-	
+	 
 
 	@Transient
 	public Long getRowId() {

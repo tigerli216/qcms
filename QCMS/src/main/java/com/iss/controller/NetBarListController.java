@@ -133,7 +133,12 @@ public class NetBarListController extends BaseController {
 		UserEntity user=(UserEntity)session.getAttribute(ConstantValue.SESSION_USER);
 		 
 		Map<String, Object> statMap=(Map<String, Object>)session.getAttribute(ConstantValue.SESSION_NETBAR_DEPLOY_STATISTICS);
-		
+		if(statMap==null){
+			statMap=new HashMap<>();
+			statMap.put("total", 0);
+			statMap.put("deployNum", 0);
+			statMap.put("undeployNum", 0);
+		}
 		return JsonUtil.toJson(statMap);
 	}
 	

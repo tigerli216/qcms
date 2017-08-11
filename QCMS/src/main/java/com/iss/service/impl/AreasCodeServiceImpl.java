@@ -116,6 +116,14 @@ public class AreasCodeServiceImpl implements IAreasCodeService {
 		treeNode = null;
 		return json;
 	}
+
+	
+	@Override
+	public AreasEntity getById(String id) {
+		// TODO Auto-generated method stub
+		AreasEntity a=this.iAreasCodeJPADao.findOne(id);
+		return a;
+	}
 	
 	
 }

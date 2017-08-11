@@ -69,4 +69,6 @@ public interface INetBar2Service {
 	
 	String queryMaxUpdateTime();
 	
+	NetBar2Entity getById(String id);
+	
 }
