@@ -177,6 +177,18 @@
 	</script>
     <script>
     var editableNm="editable";
+    var columns = [{data:'isdeployed'},{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
+	,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'},{data:'barId'}];//,{data:'login'}
+	var columnDefs = new Array();
+	columnDefs.push({targets:0, className:'text-center', orderable:false, render:function(value,type,row,meta){
+		if(value==1)return "已施工";
+		else if(value==0)return "<a onclick='goDeploy("+row.barId+")' style='color: blue;''>确认</a>";
+	}});//操作列
+	// columnDefs.push({targets:1, className:'text-center', orderable:false, render:optRenderAuth, visible:isVisible});//操作列
+	columnDefs.push({targets:1, className:'text-center', orderable:false, render:function(value, type, row, meta){
+		// console.log(value+"=="+row.netbar_name+"=="+row+"=="+meta);
+		return "<a onclick='showBarInfo("+row.barId+")' style='color: blue;''>"+value+"</a>";
+	}});//操作列
     var url = '${basePath}/netbarList/build/list/query';
     	$(document).ready(function(){
     		var id = "";
@@ -185,18 +197,7 @@
     		var areaCode="";
     		var districtCode="";
     		initDtSearch();
-    		var columns = [{data:'isdeployed'},{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
-			,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'},{data:'barId'}];//,{data:'login'}
-    		var columnDefs = new Array();
-			columnDefs.push({targets:0, className:'text-center', orderable:false, render:function(value,type,row,meta){
-				if(value==1)return "已施工";
-				else if(value==0)return "<a onclick='goDeploy("+row.barId+")' style='color: blue;''>确认</a>";
-			}});//操作列
-			// columnDefs.push({targets:1, className:'text-center', orderable:false, render:optRenderAuth, visible:isVisible});//操作列
-			columnDefs.push({targets:1, className:'text-center', orderable:false, render:function(value, type, row, meta){
-    			// console.log(value+"=="+row.netbar_name+"=="+row+"=="+meta);
-    			return "<a onclick='showBarInfo("+row.barId+")' style='color: blue;''>"+value+"</a>";
-    		}});//操作列
+    		
     		var onClick = function(event, treeId, treeNode, clickFlag) {
 				id = treeNode.id;
 				parentId = treeNode.pId;
@@ -289,9 +290,9 @@
     		if(table){
     			// table.fnClearTable();
     			table.fnDestroy();
-    		} 
-    		var columns = [/* {data:'barId'}, */{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
-			,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'}];//,{data:'login'}
+    		}  
+    	//	var columns = [/* {data:'barId'}, */{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
+		//	,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'}];//,{data:'login'}
 			
         	$.com.ajax({
             		url: url,
@@ -304,7 +305,8 @@
         					 "bSort": false,
         					 processing: true,
     						"data": str ,
-    				        "columns":columns
+    				        "columns":columns,
+    				        columnDefs: columnDefs
     		   			});
     		       		setButtonValue('all');
     	       		},
@@ -366,20 +368,20 @@
     		if(table){
     		//	table.fnClearTable();
     			table.fnDestroy();
-    		} 
-    		var columns = [/* {data:'barId'}, */{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
-			,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'}];//,{data:'login'}
+    		}  
+    		
         	$.com.ajax({
             		url: "${basePath}/netbarList/build/session/query",
     		       	data: {"search":{"querytype":querytype}},
     		       	success: function(result){
     		    		var str= drawData(result);
-    		    		console.log(str.length+"++"+JSON.stringify(str));
+    		    	// 	console.log(str.length+"++"+JSON.stringify(str));
     		       		$('#'+editableNm).dataTable({
         					paging:false,
         					 "bSort": false,
     						"data": str ,
-    				        "columns":columns
+    				        "columns":columns,
+    				        columnDefs: columnDefs
     		   			});
     		       		setButtonValue('all');
     	       		},
