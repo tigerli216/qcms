@@ -199,6 +199,11 @@ public class NetBarListController extends BaseController {
 			data=new ArrayList<AreasBarEntity>();
 		}else
 			data = iNetBarListService.loadAreasBar(user,param);
+		if(CommonUtil.isNotEmpty(data)){
+			for(AreasBarEntity d:data){
+				d.setBarName(d.getBarName()+"("+d.getBarId()+")");
+			}
+		}
 		DataTables<AreasBarEntity> dt = new DataTables<AreasBarEntity>(param.getDraw(), data==null?0:data.size(), data==null?0:data.size(), data);
 		return JsonUtil.toJson(dt);
 	}

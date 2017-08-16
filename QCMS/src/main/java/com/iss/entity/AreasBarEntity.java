@@ -29,6 +29,7 @@ public class AreasBarEntity implements Serializable, IExcelModel{
 	private String approvalNum;
 	private Integer computerNum;
 	private Integer isdeployed;
+	private Integer isOnline;
 
 	@Excel(name = "在线终端数", orderNum = "2")
 	private Long online;
@@ -147,6 +148,14 @@ public class AreasBarEntity implements Serializable, IExcelModel{
 
 	public void setIsdeployed(Integer isdeployed) {
 		this.isdeployed = isdeployed;
+	}
+
+	public Integer getIsOnline() {
+		return isOnline;
+	}
+
+	public void setIsOnline(Integer isOnline) {
+		this.isOnline = isOnline;
 	}
 	
 

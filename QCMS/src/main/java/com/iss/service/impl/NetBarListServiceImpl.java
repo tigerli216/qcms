@@ -169,8 +169,9 @@ public class NetBarListServiceImpl implements INetBarListService {
 				NetBarPrintVo vo = new NetBarPrintVo();
 				vo.setIsdeployed(ae.getIsdeployed()==null?0:ae.getIsdeployed());
 				vo.setBarId(ae.getBarId());
-				vo.setBarName(ae.getBarName()+"("+CommonUtil.toString(ae.getApprovalNum())+")");
+				vo.setBarName(ae.getBarName()+"("+CommonUtil.toString(ae.getBarId())+")");
 				vo.setApprovalNum(ae.getApprovalNum());
+				vo.setIsOnline(ae.getIsOnline()==null?0:ae.getIsOnline());
 				Integer comNum=ae.getComputerNum();
 				vo.setZdzs(Long.valueOf(comNum));
 				// 已安装终端:// OnlineStatistic.onlineNum + OnlineStatistic.offlineNum

@@ -45,13 +45,13 @@
                     		</div>
                     		<div id="barlist_div" class="col-sm-9">
                     			<input type="button" id="allbtn" value="全部" onclick="loadDataFromSession('all')">&nbsp;&nbsp;&nbsp;&nbsp;
-                    			<input type="button" id="finishbtn" value="施工完成" onclick="loadDataFromSession('finish')">&nbsp;&nbsp;&nbsp;&nbsp;
-                    			<input type="button" id="unfinishbtn" value="施工未完成" onclick="loadDataFromSession('unfinish')">
+                    			<input type="button" style="display: none;" id="finishbtn" value="施工完成" onclick="loadDataFromSession('finish')">&nbsp;&nbsp;&nbsp;&nbsp;
+                    			<input type="button" style="display: none;" id="unfinishbtn" value="施工未完成" onclick="loadDataFromSession('unfinish')">
 		                        <table class="table table-striped table-bordered table-hover " id="editable">
 		                        	
 		                            <thead>
 		                                <tr>
-		                                	<th>操作</th>
+		                                	<th>状态</th>
 		                                    <th>网吧名称</th>
 											<th>终端总数/(个)</th>
 											<th>在线/(个)</th>
@@ -60,7 +60,7 @@
 											<th>未安装终端/(个)</th>
 											<th>在线率</th>
 											<th>安装率</th>
-											<th style="display:none;"></th>
+											<!-- <th style="display:none;">1</th> -->
 		                                </tr>
 		                            </thead>
 		                            <tbody id="tbody_stat">
@@ -75,7 +75,7 @@
 												<td>${stat.online}</td>
 												<td>${stat.offline}</td>
 												<td>${stat.pcTotal}</td>
-												<td style="display:none;">${stat.barId}</td>
+												<%-- <td class="hid" style="display:none;">${stat.barId}</td> --%>
 											</tr>
 		                            	</c:forEach>
 		                            </tbody>
@@ -177,18 +177,19 @@
 	</script>
     <script>
     var editableNm="editable";
-    var columns = [{data:'isdeployed'},{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
-	,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'},{data:'barId'}];//,{data:'login'}
+    var columns = [{data:'isOnline'},{data:'barName'},{data:'zdzs'},{data:'onLineCount'},{data:'offLineCount'},{data:'installNum'}
+	,{data:'unInstallNum'},{data:'onLineRate'},{data:'installRate'}/* ,{data:'barId'} */];//,{data:'login'}
 	var columnDefs = new Array();
 	columnDefs.push({targets:0, className:'text-center', orderable:false, render:function(value,type,row,meta){
-		if(value==1)return "已施工";
-		else if(value==0)return "<a onclick='goDeploy("+row.barId+")' style='color: blue;''>确认</a>";
+		if(value==1)return "<font style='color:red;'>在线</font>";
+		else if(value==0)return "离线";
 	}});//操作列
 	// columnDefs.push({targets:1, className:'text-center', orderable:false, render:optRenderAuth, visible:isVisible});//操作列
 	columnDefs.push({targets:1, className:'text-center', orderable:false, render:function(value, type, row, meta){
-		// console.log(value+"=="+row.netbar_name+"=="+row+"=="+meta);
-		return "<a onclick='showBarInfo("+row.barId+")' style='color: blue;''>"+value+"</a>";
+		 console.log(value+"=="+row.barName+"=="+row+"=="+meta);
+		return "<a onclick='showBarInfo(\""+row.barName+"\")' style='color: blue;''>"+value+"</a>";
 	}});//操作列
+	 
     var url = '${basePath}/netbarList/build/list/query';
     	$(document).ready(function(){
     		var id = "";
@@ -240,7 +241,9 @@
     			    	type: 'POST', 
     			    	dataSrc: function(result){
     			    		setButtonValue('all');
-    			    		return drawData(result);
+    			    		var datastr= drawData(result);
+    			    		hideTd();
+    			    		return datastr;
    			    		}
    			    	},//dataSrc表格数据渲染数据加工的方法
     			    searchDelay: 500,
@@ -309,6 +312,7 @@
     				        columnDefs: columnDefs
     		   			});
     		       		setButtonValue('all');
+    		       		hideTd();
     	       		},
                   	error:function(){
                   		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试！'});
@@ -316,6 +320,10 @@
     			});
 			 
 			
+    	}
+    	
+    	function getStrBetween(str,start,end){
+    		return str.substring(str.indexOf(start)+1,str.indexOf(end))
     	}
     	
     	function setButtonValue(querytype){  
@@ -336,6 +344,13 @@
                 }
 			});
     		
+    	}
+    	
+    	function hideTd(){
+    		var tds = $("td[class='hid']");
+    		for(i = 0; i < tds.length; i++){
+    			tds[i].style.display = "none"; //
+    		}
     	}
     	
     	 //预编译模板
@@ -384,14 +399,17 @@
     				        columnDefs: columnDefs
     		   			});
     		       		setButtonValue('all');
+    		       		hideTd();
     	       		},
                   	error:function(){
                   		BootstrapDialog.alert({type:'type-danger', message:'操作失败，请刷新重试！！'});
                     }
     			});
     	}
-    	var showBarInfo=function(barId){
-    		console.log("show info ===>"+barId);
+    	var showBarInfo=function(barName){
+    	//	console.log("show info ===>"+barName);
+    		var barId=barName.substring(barName.indexOf("(")+1,barName.indexOf(")"));
+    		console.log("barId=====>"+barId);
     		$.com.ajax({
         		url: "${basePath}/netbar2/info/show",
 		       	data: {"search":{"id":barId}},
@@ -404,8 +422,9 @@
 			});
     		
     	}
-    	 var goDeploy=function(barId){
-    	     	console.log("start deploy ===>"+barId);
+    	 var goDeploy=function(barName){
+    	     	console.log("start deploy ===>"+barName);
+    	     	var barId=barName.substring(barName.indexOf("(")+1,barName.indexOf(")"));
     	     	window.open("${basePath}/netbarList/goDeployPrint?barId="+barId,"打印", "height=600, width=1000,top=30,left=50, toolbar =no, menubar=no,scrollbars=no, resizable=no, location=no, status=no");
     	     };
     	 

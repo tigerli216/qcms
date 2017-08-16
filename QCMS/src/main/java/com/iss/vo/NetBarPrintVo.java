@@ -16,7 +16,7 @@ public class NetBarPrintVo implements Comparable<NetBarPrintVo>{
 	private String uploadTime;
 	private String uploadDate;
 	private Integer isdeployed;
-
+	private Integer isOnline;//是否在线 1-是 0-否
 	
 	public String getBarId() {
 		return barId;
@@ -101,6 +101,14 @@ public class NetBarPrintVo implements Comparable<NetBarPrintVo>{
 	}
 	public void setIsdeployed(Integer isdeployed) {
 		this.isdeployed = isdeployed;
+	}
+	
+	
+	public Integer getIsOnline() {
+		return isOnline;
+	}
+	public void setIsOnline(Integer isOnline) {
+		this.isOnline = isOnline;
 	}
 	@Override
 	public int compareTo(NetBarPrintVo o) {
