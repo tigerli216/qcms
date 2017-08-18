@@ -67,9 +67,18 @@ public class NetBar2Controller extends BaseController {
 		NetBar2Entity bar= this.iNetBarService.getById(idStr);
 		AreasEntity city= this.iAreasCodeService.getById(bar.getCity_code());
 		if(city!=null)bar.setCity_code(city.getAreasname());
+		String districtCode=bar.getDistrict_code();
+		if(CommonUtil.isNotEmpty(districtCode)){
+			Integer head=Integer.valueOf(districtCode.substring(0,4));
+			if(head>=4189){
+				districtCode=head+"00";
+			}
+			AreasEntity district= this.iAreasCodeService.getById(districtCode);
+			if(district!=null)bar.setDistrict_code(district.getAreasname());
+		}
+		 
 		
-		AreasEntity district= this.iAreasCodeService.getById(bar.getDistrict_code());
-		if(district!=null)bar.setDistrict_code(district.getAreasname());
+		
 		return JsonUtil.toJson(bar);
 	}
 	

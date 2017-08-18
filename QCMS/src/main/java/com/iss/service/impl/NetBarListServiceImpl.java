@@ -175,7 +175,8 @@ public class NetBarListServiceImpl implements INetBarListService {
 				Integer comNum=ae.getComputerNum();
 				vo.setZdzs(Long.valueOf(comNum));
 				// 已安装终端:// OnlineStatistic.onlineNum + OnlineStatistic.offlineNum
-				vo.setInstallNum(ae.getOnline() + ae.getOffline());
+//				vo.setInstallNum(ae.getOnline() + ae.getOffline());
+				vo.setInstallNum(Long.valueOf(ae.getInstalledNum()));
 				vo.setUnInstallNum(comNum - vo.getInstallNum());// 未安装终端: 终端总数 -  已安装终端
 				vo.setOnLineCount(ae.getOnlineNumToday());// 在线=OnlineStatistic.onlineNumToday
 				vo.setOffLineCount(vo.getInstallNum() - vo.getOnLineCount()); // 不在线=已安装终端  -  在线
