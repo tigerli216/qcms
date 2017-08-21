@@ -186,7 +186,7 @@
 	}});//操作列
 	// columnDefs.push({targets:1, className:'text-center', orderable:false, render:optRenderAuth, visible:isVisible});//操作列
 	columnDefs.push({targets:1, className:'text-center', orderable:false, render:function(value, type, row, meta){
-		 console.log(value+"=="+row.barName+"=="+row+"=="+meta);
+		/*  console.log(value+"=="+row.barName+"=="+row+"=="+meta); */
 		return "<a onclick='showBarInfo(\""+row.barName+"\")' style='color: blue;''>"+value+"</a>";
 	}});//操作列
 	 
@@ -210,7 +210,7 @@
 					// table.fnClearTable();
 					table.fnDestroy();
 				}
-    			console.log("---"+treeNode.pId+" id:"+id+"===parentId:"+parentId+"==areaName:"+areaName);
+    			/* console.log("---"+treeNode.pId+" id:"+id+"===parentId:"+parentId+"==areaName:"+areaName); */
 				if(treeNode.pId == 0){
 					areaCode="";
 					districtCode="";
@@ -302,7 +302,7 @@
     		       	data: {"search":{"keyword":val,"querytype":"keywords"}},
     		       	success: function(result){
     		    		var str= drawData(result);
-    		    		console.log("++"+JSON.stringify(str));
+    		    		/* console.log("++"+JSON.stringify(str)); */
     		       		$('#'+editableNm).dataTable({
         					paging:false,
         					 "bSort": false,
@@ -331,7 +331,7 @@
         		url: "${basePath}/netbarList/build/statistics",
 		       	data: {"search":{"querytype":querytype}},
 		       	success: function(result){
-		       		console.log("result===>"+result);
+		       		/* console.log("result===>"+result); */
 		       		 
 		       			$("#allbtn").val("全部("+result.total+")");
 			    		$("#finishbtn").val("施工完成("+result.deployNum+")");
@@ -409,7 +409,7 @@
     	var showBarInfo=function(barName){
     	//	console.log("show info ===>"+barName);
     		var barId=barName.substring(barName.indexOf("(")+1,barName.indexOf(")"));
-    		console.log("barId=====>"+barId);
+    		/* console.log("barId=====>"+barId); */
     		$.com.ajax({
         		url: "${basePath}/netbar2/info/show",
 		       	data: {"search":{"id":barId}},
@@ -423,7 +423,7 @@
     		
     	}
     	 var goDeploy=function(barName){
-    	     	console.log("start deploy ===>"+barName);
+    	     	/* console.log("start deploy ===>"+barName); */
     	     	var barId=barName.substring(barName.indexOf("(")+1,barName.indexOf(")"));
     	     	window.open("${basePath}/netbarList/goDeployPrint?barId="+barId,"打印", "height=600, width=1000,top=30,left=50, toolbar =no, menubar=no,scrollbars=no, resizable=no, location=no, status=no");
     	     };
